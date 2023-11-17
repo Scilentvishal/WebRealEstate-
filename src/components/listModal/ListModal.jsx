@@ -112,6 +112,7 @@ const ListModal = ({ handleHideListModal }) => {
       const imgdata = await res.json();
 
       const imageUrl = imgdata["secure_url"];
+      console.log(imageUrl);
       return imageUrl;
     } catch (error) {
       console.log(error);

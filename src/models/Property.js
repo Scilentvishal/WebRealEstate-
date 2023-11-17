@@ -16,6 +16,10 @@ const PropertySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    propertyType: {
+      type: String,
+      required: true,
+    },
     state: {
       type: String,
       required: true,
@@ -38,11 +42,7 @@ const PropertySchema = new mongoose.Schema(
       required: true,
       min: 15,
     },
-    beds: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
+   
     beds: {
       type: Number,
       required: true,
