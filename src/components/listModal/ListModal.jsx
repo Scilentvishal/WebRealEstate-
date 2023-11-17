@@ -90,7 +90,7 @@ const ListModal = ({ handleHideListModal }) => {
       console.error(error);
     }
 
-    // handleHideListModal();
+    handleHideListModal();
   };
 
   const uploadImage = async () => {

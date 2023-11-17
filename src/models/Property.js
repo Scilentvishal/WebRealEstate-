@@ -27,7 +27,7 @@ const PropertySchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
-      min: 25,
+      min: 2,
     },
     image: {
       type: String,
@@ -40,7 +40,7 @@ const PropertySchema = new mongoose.Schema(
     size: {
       type: Number,
       required: true,
-      min: 15,
+      min: 1,
     },
    
     beds: {
