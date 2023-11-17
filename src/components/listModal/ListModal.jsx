@@ -69,13 +69,13 @@ const ListModal = ({ handleHideListModal }) => {
       const res = await fetch("/api/property", {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${session?.token?.token?.jti}`,
+          "Authorization": `Bearer ${session?.user?.accessToken}`,
         },
         method: "POST",
         body: JSON.stringify({
           ...stateData,
           img: imageUrl,
-          currentOwner: session?.token?.token?.user?.mongoId,
+          currentOwner: session?.user?._id,
         }),
       });
 
@@ -90,7 +90,7 @@ const ListModal = ({ handleHideListModal }) => {
       console.error(error);
     }
 
-    handleHideListModal();
+    // handleHideListModal();
   };
 
   const uploadImage = async () => {
@@ -126,7 +126,7 @@ const ListModal = ({ handleHideListModal }) => {
     <div
       className={`fixed inset-0 flex items-center justify-center transition-opacity duration-300 ease-in-out`}
     >
-      {console.log(session)}
+      {/* {console.log(session)} */}
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="bg-white p-8 rounded-md shadow-lg z-10 w-full max-w-md">
         <div className="flex items-center justify-between mb-4">

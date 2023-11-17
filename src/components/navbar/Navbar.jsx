@@ -9,7 +9,7 @@ const Navbar = () => {
   const {data: session, staus} = useSession();
   const page = usePathname()
   // const isUserLoggedIn = useSession();
-  const [isUserLoggedIn, setisUserLoggedIn] = useState(!session?.token?.token?.user?.mongoId);
+  const [isUserLoggedIn, setisUserLoggedIn] = useState(!session?.user?._id);
   const [showListModal, setShowListModal] = useState(false);
 
   // console.log(`errrr ${session}`)
@@ -23,8 +23,8 @@ const Navbar = () => {
   useEffect(() => {
     // Optional: You can update the state based on the session
     // For example, if you want to track the user's login status
-    setisUserLoggedIn(Boolean(!session?.token?.token?.user?.mongoId));
-  }, [session?.token?.token?.user?.mongoId]);
+    setisUserLoggedIn(Boolean(!session?.user?._id));
+  }, [session?.user?._id]);
 
   if (
     page.includes("login") ||
@@ -38,7 +38,7 @@ const Navbar = () => {
     <header className=" fixed bg-black top-0 left-0 right-0 shadow-[0px_3px_9px_0px_#718096] body-font z-[1000]">
       <div className="container max-w-7xl mx-auto flex flex-wrap p-5 justify-between items-center ">
         <Link href="/">
-          {console.log(session)}
+          {/* {console.log(session)} */}
           <span className="ml-3 text-xl text-primaryOrange">WebRealEstate</span>
         </Link>
         {/* <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">

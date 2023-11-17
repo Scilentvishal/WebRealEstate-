@@ -4,10 +4,10 @@ import { signJwtToken } from "@/lib/jwt";
 import db from "@/lib/db";
 // import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import User from "@/models/User";
+import jwt from "jsonwebtoken"
 import NextAuth from "next-auth";
-import nextAuth from "next-auth";
 
-const handler = nextAuth({
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       type: "credentials",
@@ -32,12 +32,17 @@ const handler = nextAuth({
           throw new Error("Invalid Password");
         } else {
           const { password, ...currentUser } = user._doc;
-
+          console.log(`userdooc: ${JSON.stringify(user._doc)}`);
+          console.log(`useroc: ${JSON.stringify(currentUser)}`);
           const accessToken = signJwtToken(currentUser, { expiresIn: "5d" });
 
           return {
             ...currentUser,
             accessToken,
+            user: {
+              _id: currentUser._id,
+              accessToken: accessToken,
+            },
           };
         }
       },
@@ -46,19 +51,25 @@ const handler = nextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = user.accessToken;
-        token._id = user._id;
+        token.accessToken = await user.accessToken;
+        token._id = await user._id;
+        console.log("JWT Calwwlback:", { token, user });
       }
 
       return token;
     },
 
     async session({ session, token }) {
+    
       if (token) {
+        // Modify session.user instead of token directly
         session.user._id = token._id;
         session.user.accessToken = token.accessToken;
       }
-    },
+    
+      return session;
+    }
+    
   },
 
   secret: process.env.NEXT_AUTH_SECRET,
