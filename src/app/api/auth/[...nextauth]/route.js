@@ -5,72 +5,131 @@ import db from "@/lib/db";
 // import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import User from "@/models/User";
 import NextAuth from "next-auth";
+import nextAuth from "next-auth";
 
-export const authOptions = {
-  //   adapter: MongoDBAdapter(clientPromise),
+const handler = nextAuth({
   providers: [
     CredentialsProvider({
-      name: "credentials",
+      type: "credentials",
       credentials: {
         email: { label: "email", type: "email" },
         password: { label: "password", type: "password" },
       },
-      async authorize(credentials) {
-        // check email and password are valid
-        if (!credentials.email || !credentials.password) {
-          return null;
-        }
+      async authorize(credentials, req) {
+        const { email, password } = credentials;
 
-        // check if use exist
-        const user = await User.findOne({ email: credentials.email });
+        await db();
+
+        const user = await User.findOne({ email });
 
         if (!user) {
-          return null;
+          throw new Error("Invalid Input");
         }
 
-        // check password matches
+        const comparePassword = await bcrypt.compare(password, user.password);
 
-        const passwordsMatch = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
+        if (!comparePassword) {
+          throw new Error("Invalid Password");
+        } else {
+          const { password, ...currentUser } = user._doc;
 
-        if (!passwordsMatch) {
-          return null;
+          const accessToken = signJwtToken(currentUser, { expiresIn: "5d" });
+
+          return {
+            ...currentUser,
+            accessToken,
+          };
         }
-        // return user object if everything is fine
-        return Promise.resolve({
-            email: user.email,
-            // Add other user properties as needed
-            mongoId: user._id, // Assuming MongoDB _id is available in your user model
-          });
-  
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
   callbacks: {
-    async jwt(token, user) {
-      // Set the user's MongoDB _id directly in the token
-      if (user && user.mongoId) {
-        token.mongoId = user.mongoId;
+    async jwt({ token, user }) {
+      if (user) {
+        token.accessToken = user.accessToken;
+        token._id = user._id;
       }
+
       return token;
     },
-    async session(session, user) {
-      // Set the user's MongoDB _id directly in the session
-      if (user && user.mongoId) {
-        session.user.mongoId = user.mongoId;
+
+    async session({ session, token }) {
+      if (token) {
+        session.user._id = token._id;
+        session.user.accessToken = token.accessToken;
       }
-      return session;
     },
   },
+
   secret: process.env.NEXT_AUTH_SECRET,
   debug: process.env.NODE_ENV === "development",
-};
+});
 
-const handler = NextAuth(authOptions);
+// export const authOptions = {
+//   //   adapter: MongoDBAdapter(clientPromise),
+//   providers: [
+//     CredentialsProvider({
+//       name: "credentials",
+//       credentials: {
+//         email: { label: "email", type: "email" },
+//         password: { label: "password", type: "password" },
+//       },
+//       async authorize(credentials) {
+//         // check email and password are valid
+//         if (!credentials.email || !credentials.password) {
+//           return null;
+//         }
+
+//         // check if use exist
+//         const user = await User.findOne({ email: credentials.email });
+
+//         if (!user) {
+//           return null;
+//         }
+
+//         // check password matches
+
+//         const passwordsMatch = await bcrypt.compare(
+//           credentials.password,
+//           user.password
+//         );
+
+//         if (!passwordsMatch) {
+//           return null;
+//         }
+//         // return user object if everything is fine
+//         return Promise.resolve({
+//             email: user.email,
+//             // Add other user properties as needed
+//             mongoId: user._id, // Assuming MongoDB _id is available in your user model
+//           });
+
+//       },
+//     }),
+//   ],
+//   // session: {
+//   //   strategy: "jwt",
+//   // },
+//   callbacks: {
+//     async signJwtToken(token, user) {
+//       // Set the user's MongoDB _id directly in the token
+//       if (user && user.mongoId) {
+//         token.mongoId = user.mongoId;
+//       }
+//       return token;
+//     },
+//     async session(session, user) {
+//       // Set the user's MongoDB _id directly in the session
+//       if (user && user.mongoId) {
+//         session.user.mongoId = user.mongoId;
+//       }
+//       return session;
+//     },
+//   },
+//   secret: process.env.NEXT_AUTH_SECRET,
+//   debug: process.env.NODE_ENV === "development",
+// };
+
+// const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

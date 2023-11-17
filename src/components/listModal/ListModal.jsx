@@ -3,10 +3,17 @@ import Image from "next/image";
 import React, { useState } from "react";
 import typesOfProperties from "../properties/propertyTypesData";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
 const ListModal = ({ handleHideListModal }) => {
+  const { data: session } = useSession();
   const router = useRouter();
-  const [formData, setFormData] = useState({
+  const responseType = {
+    error: "error",
+    success: "success",
+  };
+  const [stateData, setstateData] = useState({
     title: "",
     state: "",
     city: "",
@@ -22,16 +29,16 @@ const ListModal = ({ handleHideListModal }) => {
   const handleChange = (e) => {
     if (e.target.type === "file") {
       const file = e.target.files[0];
-      setFormData((prevFormData) => ({
-        ...prevFormData,
+      setstateData((prevstateData) => ({
+        ...prevstateData,
         image: file,
       }));
 
       // Create a preview URL for the image
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
+        setstateData((prevstateData) => ({
+          ...prevstateData,
           imagePreview: reader.result,
         }));
       };
@@ -40,8 +47,8 @@ const ListModal = ({ handleHideListModal }) => {
         reader.readAsDataURL(file);
       }
     } else {
-      setFormData({
-        ...formData,
+      setstateData({
+        ...stateData,
         [e.target.name]: e.target.value,
       });
     }
@@ -50,7 +57,7 @@ const ListModal = ({ handleHideListModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isValueEmpty = Object.values(formData).some((value) => value === "");
+    const isValueEmpty = Object.values(stateData).some((value) => value === "");
 
     if (isValueEmpty) {
       return notify("Fill All Fields", responseType.error);
@@ -62,11 +69,11 @@ const ListModal = ({ handleHideListModal }) => {
       const res = await fetch("/api/property", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer  ${session?.token?.token?.jti}`,
+          "Authorization": `Bearer ${session?.token?.token?.jti}`,
         },
         method: "POST",
         body: JSON.stringify({
-          ...formData,
+          ...stateData,
           img: imageUrl,
           currentOwner: session?.token?.token?.user?.mongoId,
         }),
@@ -87,17 +94,39 @@ const ListModal = ({ handleHideListModal }) => {
   };
 
   const uploadImage = async () => {
-    if (!formData.image) return
+    if (!stateData.image) return;
 
-    const formData = new formData();
+    const Data = new FormData();
+    Data.append("file", stateData.image);
+    Data.append("upload_preset", "realEstateApp");
+    Data.append("cloud_name", "dehite0hw");
+    try {
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dehite0hw/image/upload",
+        {
+          method: "POST",
+          body: Data,
+        }
+      );
 
-    formData.append
+      const imgdata = await res.json();
+
+      const imageUrl = imgdata["secure_url"];
+      return imageUrl;
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  function notify(text, response) {
+    toast[response](text);
+  }
 
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center transition-opacity duration-300 ease-in-out`}
     >
+      {console.log(session)}
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="bg-white p-8 rounded-md shadow-lg z-10 w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
@@ -139,7 +168,7 @@ const ListModal = ({ handleHideListModal }) => {
               type="text"
               id="title"
               name="title"
-              value={formData.title}
+              value={stateData.title}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
               required
@@ -155,7 +184,7 @@ const ListModal = ({ handleHideListModal }) => {
             <select
               id="propertyType"
               name="propertyType"
-              value={formData.propertyType}
+              value={stateData.propertyType}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
               required
@@ -181,7 +210,7 @@ const ListModal = ({ handleHideListModal }) => {
               type="text"
               id="state"
               name="state"
-              value={formData.state}
+              value={stateData.state}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
               required
@@ -198,7 +227,7 @@ const ListModal = ({ handleHideListModal }) => {
               type="text"
               id="city"
               name="city"
-              value={formData.city}
+              value={stateData.city}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
               required
@@ -214,7 +243,7 @@ const ListModal = ({ handleHideListModal }) => {
             <textarea
               id="description"
               name="description"
-              value={formData.description}
+              value={stateData.description}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
               rows="4"
@@ -237,10 +266,10 @@ const ListModal = ({ handleHideListModal }) => {
               accept="image/*" // Allow only image files
               required
             />
-            {formData.imagePreview && (
+            {stateData.imagePreview && (
               <div className="mt-2">
                 <Image
-                  src={formData.imagePreview}
+                  src={stateData.imagePreview}
                   alt="Image Preview"
                   className="rounded-md"
                   width={300}
@@ -260,7 +289,7 @@ const ListModal = ({ handleHideListModal }) => {
               type="number"
               id="price"
               name="price"
-              value={formData.price}
+              value={stateData.price}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
               required
@@ -277,7 +306,7 @@ const ListModal = ({ handleHideListModal }) => {
               type="number"
               id="size"
               name="size"
-              value={formData.size}
+              value={stateData.size}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
               required
@@ -294,7 +323,7 @@ const ListModal = ({ handleHideListModal }) => {
               type="number"
               id="beds"
               name="beds"
-              value={formData.beds}
+              value={stateData.beds}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
               required
@@ -311,7 +340,7 @@ const ListModal = ({ handleHideListModal }) => {
               type="text"
               id="phonenumber"
               name="phonenumber"
-              value={formData.phonenumber}
+              value={stateData.phonenumber}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
             />

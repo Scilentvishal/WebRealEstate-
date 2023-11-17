@@ -8,10 +8,7 @@ import { toast } from "react-toastify";
 
 const page = () => {
   const router = useRouter();
-  const [state, setState] = useState({
-    email: "",
-    password: "",
-  });
+  const [state, setState] = useState({});
   const responseType = {
     error: "error",
     success: "success",
@@ -80,7 +77,7 @@ const page = () => {
                 </label>
                 <input
                   onChange={handleChange}
-                  value={state.email}
+                  value={state?.email || ""}
                   type="email"
                   name="email"
                   id="email"
@@ -98,7 +95,7 @@ const page = () => {
                 </label>
                 <input
                   onChange={handleChange}
-                  value={state.password}
+                  value={state?.password || ""}
                   type="password"
                   name="password"
                   id="password"
