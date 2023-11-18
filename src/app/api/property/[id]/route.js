@@ -9,8 +9,10 @@ export async function GET(req, ctx) {
 
   try {
     const property = await Property.findById(id)
-      .populate("CurrentOwner")
-    //   .select("password");
+    .populate({
+      path: "CurrentOwner",
+      select: "-password", // Exclude the 'password' field
+    });
     return new Response(JSON.stringify(property), { status: 200 });
   } catch (error) {
     return Response(JSON.stringify(null), { status: 500 });

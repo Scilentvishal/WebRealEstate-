@@ -1,5 +1,4 @@
 "use client";
-import { Property } from "@/components/properties/propertyData";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +14,7 @@ const page = (ctx) => {
   const [loading, setLoading] = useState(true); // Add loading state
   const [showEditModal, setShowEditModal] = useState(false);
 
-  const [isOwner, setisOwner] = useState(session?.user._id === property?.CurrentOwner)
+  const [isOwner, setisOwner] = useState(session?.user?._id === property?.CurrentOwner?._id)
 
   const router = useRouter();
   const id = ctx.params.id;
@@ -36,8 +35,8 @@ const page = (ctx) => {
   }, [id]);
 
   useEffect(()=>{
-    setisOwner(session?.user._id === property?.CurrentOwner)
-  },[session?.user._id , property?.CurrentOwner])
+    setisOwner(session?.user._id === property?.CurrentOwner?._id)
+  },[session?.user?._id , property?.CurrentOwner?._id])
 
   const handleOpenEditModal = () => {
     setShowEditModal((prev) => true);
@@ -67,8 +66,8 @@ const page = (ctx) => {
               {property?.city}
             </span>
           </div>
-          <div className="flex flex-col sm:flex-row mt-10">
-            <div className="sm:w-1/3 text-center sm:pr-8 sm:py-8">
+          <div className="flex flex-col md:flex-row mt-10">
+            {/* <div className="md:w-1/3 text-center md:pr-8 md:py-8">
               <div className="w-20 h-20 rounded-full inline-flex items-center justify-center bg-gray-200 text-gray-400">
                 <svg
                   fill="none"
@@ -93,12 +92,12 @@ const page = (ctx) => {
                   pin sartorial venmo tbh hot chicken gentrify portland.
                 </p>
               </div>
-            </div>
-            <div className="sm:w-2/3 sm:pl-8 sm:py-8 sm:border-l border-gray-200 sm:border-t-0 border-t mt-4 pt-4 sm:mt-0 text-center sm:text-left">
+            </div> */}
+            <div className="md:w-2/3 md:pl-8 md:py-8 mt-4 pt-4 md:mt-0 text-center md:text-left">
               <span className="tracking-widest text-sm title-font font-medium text-white">
                 {property?.propertyType}
               </span>
-              <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-primaryOrange">
+              <h1 className="md:text-3xl text-2xl font-medium title-font mb-2 text-primaryOrange">
                 {property?.title}
               </h1>
               <p className="leading-relaxed text-lg mb-4">
