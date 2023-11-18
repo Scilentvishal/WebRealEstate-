@@ -9,9 +9,8 @@ export async function GET(req, ctx) {
 
   try {
     const property = await Property.findById(id)
-    //   .populate("CurrentOwner")
+      .populate("CurrentOwner")
     //   .select("password");
-    console.log(`property: ${property}`);
     return new Response(JSON.stringify(property), { status: 200 });
   } catch (error) {
     return Response(JSON.stringify(null), { status: 500 });

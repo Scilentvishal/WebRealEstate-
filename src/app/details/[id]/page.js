@@ -28,8 +28,6 @@ const page = (ctx) => {
         },
         method: "GET",
       });
-
-      console.log(`res : ${res}`)
       const data = await res.json();
       console.log(data)
       setProperty(data);
