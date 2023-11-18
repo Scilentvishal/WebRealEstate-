@@ -23,7 +23,7 @@ const page = (ctx) => {
     const fetchProperty = async () => {
       const res = await fetch(`/api/property/${id}`, {
         headers: {
-          Authorization: `Bearer ${session?.user?.accessToken}`,
+          "Authorization": `Bearer ${session?.user?.accessToken}`,
         },
         method: "GET",
       });
@@ -45,20 +45,40 @@ const page = (ctx) => {
     setShowEditModal((prev) => false);
   };
 
-  const handleDelete = () => {};
+  const handleDelete = async () => {
+   try {
+     const res = await fetch(`/api/property/${id}`, {
+       headers: {
+         "Authorization": `Bearer ${session?.user?.accessToken}`,
+       },
+       method: "DELETE",
+     });
+
+     if (res.ok) {
+      router.push('/')
+     }else{
+      throw new Error(`Couldn't delete the property `);
+     }
+
+
+   } catch (error) {
+    console.error(error)
+   }
+  };
 
   return (
-    <section className="text-white body-font">
+    <section className="text-white body-font w-full">
       <div className="container max-w-8xl px-5 py-24 mx-auto flex flex-col">
-        <div className="lg:w-4/6 mx-auto">
-          <div className="rounded-lg h-auto overflow-hidden relative">
+        <div className="lg:w-4/6 mx-auto w-full">
+          <div className="rounded-lg h-auto w-full overflow-hidden relative">
             {loading ? ( // Display a loading indicator
-              <div className="w-full h-[780px] bg-gray-200 animate-pulse"></div>
+              <div className="w-full h-[500px] bg-gray-200 animate-pulse"></div>
             ) : (
               <Image
                 width={1200}
                 height={780}
                 alt="content"
+                className="max-h-[500px] w-full"
                 src={`${property?.image}`}
               />
             )}
@@ -103,7 +123,7 @@ const page = (ctx) => {
               <p className="leading-relaxed text-lg mb-4">
                 {property?.description}
               </p>
-              <div className="w-full relative my-10 shadow-md">
+              <div className="w-full relative overflow-x-auto my-10 shadow-md">
                 <table className="table-auto w-full text-left whitespace-no-wrap">
                   <thead >
                     <tr className="text-center">
