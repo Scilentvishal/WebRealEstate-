@@ -29,7 +29,6 @@ const page = (ctx) => {
         method: "GET",
       });
       const data = await res.json();
-      console.log(data)
       setProperty(data);
       setLoading(false);
     };
@@ -51,7 +50,6 @@ const page = (ctx) => {
 
   return (
     <section className="text-white body-font">
-      {console.log(session)}
       <div className="container max-w-8xl px-5 py-24 mx-auto flex flex-col">
         <div className="lg:w-4/6 mx-auto">
           <div className="rounded-lg h-auto overflow-hidden relative">

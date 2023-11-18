@@ -32,8 +32,6 @@ const handler = NextAuth({
           throw new Error("Invalid Password");
         } else {
           const { password, ...currentUser } = user._doc;
-          console.log(`userdooc: ${JSON.stringify(user._doc)}`);
-          console.log(`useroc: ${JSON.stringify(currentUser)}`);
           const accessToken = signJwtToken(currentUser, { expiresIn: "5d" });
 
           return {
@@ -53,7 +51,6 @@ const handler = NextAuth({
       if (user) {
         token.accessToken = await user.accessToken;
         token._id = await user._id;
-        console.log("JWT Calwwlback:", { token, user });
       }
 
       return token;

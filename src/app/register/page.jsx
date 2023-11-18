@@ -68,7 +68,6 @@ const page = () => {
       } 
      
     } catch (error) {
-      console.error(`errrr ${error}`);
       toast.error("Error occurred while registering", responseType.error);
     }
   };

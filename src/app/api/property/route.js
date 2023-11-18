@@ -9,10 +9,8 @@ export async function GET(res) {
     const properties = await Property.find({})
       .limit(16)
       .populate("CurrentOwner");
-    console.log(properties);
     return new Response(JSON.stringify(properties), { status: 200 });
   } catch (error) {
-    console.log(error);
     return new Response(JSON.stringify(error), { status: 500 });
   }
 }
@@ -50,10 +48,8 @@ export async function POST(req) {
     };
 
     const newProperty = await Property.create(formattedData);
-    console.log(newProperty);
     return new Response(JSON.stringify(newProperty), { status: 201 });
   } catch (error) {
-    console.log(error);
     return new Response(JSON.stringify(error), { status: 500 });
   }
 }
