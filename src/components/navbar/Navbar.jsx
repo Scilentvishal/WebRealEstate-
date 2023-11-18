@@ -36,7 +36,7 @@ const Navbar = () => {
 
   return (
     <header className=" fixed bg-black top-0 left-0 right-0 shadow-[0px_3px_9px_0px_#718096] body-font z-[1000]">
-      <div className="container max-w-7xl mx-auto flex flex-wrap p-5 justify-between items-center ">
+      <div className="container max-w-7xl mx-auto flex flex-wrap md:px-5 py-5 px-2 justify-between items-center ">
         <Link href="/">
           {/* {console.log(session)} */}
           <span className="ml-3 text-xl text-primaryOrange">WebRealEstate</span>

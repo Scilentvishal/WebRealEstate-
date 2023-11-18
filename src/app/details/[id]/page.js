@@ -68,7 +68,7 @@ const page = (ctx) => {
 
   return (
     <section className="text-white body-font w-full">
-      <div className="container max-w-8xl px-5 py-24 mx-auto flex flex-col">
+      <div className="container max-w-8xl md:px-5 px-2 py-24 mx-auto flex flex-col">
         <div className="lg:w-4/6 mx-auto w-full">
           <div className="rounded-lg h-auto w-full overflow-hidden relative">
             {loading ? ( // Display a loading indicator
