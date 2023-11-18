@@ -83,6 +83,7 @@ const ListModal = ({ handleHideListModal }) => {
         throw new Error("Error Occured");
       }
 
+      handleHideListModal();
       const property = await res.json();
 
       router.push(`/details/${property?._id}`);
@@ -90,7 +91,7 @@ const ListModal = ({ handleHideListModal }) => {
       console.error(error);
     }
 
-    handleHideListModal();
+   
   };
 
   const uploadImage = async () => {
@@ -112,7 +113,7 @@ const ListModal = ({ handleHideListModal }) => {
       const imgdata = await res.json();
 
       const imageUrl = imgdata["secure_url"];
-      console.log(imageUrl);
+
       return imageUrl;
     } catch (error) {
       console.log(error);

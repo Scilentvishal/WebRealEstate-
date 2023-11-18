@@ -4,54 +4,67 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import {BiSolidEdit} from "react-icons/bi"
-import {MdDelete} from "react-icons/md"
-import {FaBed} from "react-icons/fa"
+import { BiSolidEdit } from "react-icons/bi";
+import { MdDelete } from "react-icons/md";
+import { FaBed } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
 const page = (ctx) => {
-  const [property, setProperty] = useState("");
+  const { data:session } = useSession();
+  const [property, setProperty] = useState({});
   const [loading, setLoading] = useState(true); // Add loading state
-const [showEditModal, setShowEditModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false);
 
-  const isOwner = true;
+  const [isOwner, setisOwner] = useState(session?.user._id === property?.CurrentOwner)
 
   const router = useRouter();
   const id = ctx.params.id;
 
   useEffect(() => {
-    const fetchProperty = () => {
-      const property = Property?.find((p) => p.id.toString() === id.toString());
-      setProperty(property);
+    const fetchProperty = async () => {
+      const res = await fetch(`/api/property/${id}`, {
+        headers: {
+          Authorization: `Bearer ${session?.user?.accessToken}`,
+        },
+        method: "GET",
+      });
+
+      console.log(`res : ${res}`)
+      const data = await res.json();
+      console.log(data)
+      setProperty(data);
       setLoading(false);
     };
     fetchProperty();
-  }, []);
+  }, [id]);
 
+  useEffect(()=>{
+    setisOwner(session?.user._id === property?.CurrentOwner)
+  },[session?.user._id , property?.CurrentOwner])
 
-  const handleOpenEditModal =() =>{
-    setShowEditModal(prev => true )
-  }
-  const handleEditEditModal =() =>{
-    setShowEditModal(prev => false )
-  }
+  const handleOpenEditModal = () => {
+    setShowEditModal((prev) => true);
+  };
+  const handleEditEditModal = () => {
+    setShowEditModal((prev) => false);
+  };
 
-  const handleDelete = () =>{
-    
-  }
+  const handleDelete = () => {};
 
   return (
     <section className="text-white body-font">
+      {console.log(session)}
       <div className="container max-w-8xl px-5 py-24 mx-auto flex flex-col">
         <div className="lg:w-4/6 mx-auto">
           <div className="rounded-lg h-auto overflow-hidden relative">
-          {loading ? ( // Display a loading indicator
+            {loading ? ( // Display a loading indicator
               <div className="w-full h-[780px] bg-gray-200 animate-pulse"></div>
             ) : (
               <Image
                 width={1200}
                 height={780}
                 alt="content"
-                src={`/images/${property?.image}`}
+                src={`${property?.image}`}
               />
             )}
             <span className="absolute top-0 left-0 py-2 text-white px-6 bg-primaryOrange">
@@ -87,7 +100,7 @@ const [showEditModal, setShowEditModal] = useState(false)
             </div>
             <div className="sm:w-2/3 sm:pl-8 sm:py-8 sm:border-l border-gray-200 sm:border-t-0 border-t mt-4 pt-4 sm:mt-0 text-center sm:text-left">
               <span className="tracking-widest text-sm title-font font-medium text-white">
-                {property?.category}
+                {property?.propertyType}
               </span>
               <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-primaryOrange">
                 {property?.title}
@@ -97,8 +110,8 @@ const [showEditModal, setShowEditModal] = useState(false)
               </p>
               <div className="w-full relative my-10 shadow-md">
                 <table className="table-auto w-full text-left whitespace-no-wrap">
-                  <thead>
-                    <tr>
+                  <thead >
+                    <tr className="text-center">
                       <th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                         property_type
                       </th>
@@ -106,7 +119,7 @@ const [showEditModal, setShowEditModal] = useState(false)
                         size
                       </th>
                       <th className="px-4 py-3 title-font flex items-center justify-center gap-x-2 tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                      <FaBed />  Beds
+                        <FaBed /> Bedrooms
                       </th>
                       <th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                         Price
@@ -125,32 +138,25 @@ const [showEditModal, setShowEditModal] = useState(false)
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="px-4 py-3">{property?.property_type}</td>
-                      <td className="px-4 py-3">{property?.size}</td>
+                    <tr className="text-center">
+                      <td className="px-4 py-3">{property?.propertyType}</td>
+                      <td className="px-4 py-3">{property?.size} Sq. m</td>
                       <td className="px-4 py-3">{property?.beds}</td>
                       <td className="px-4 py-3">Rs. {property?.price}</td>
                       {isOwner && (
                         <>
                           <td className="px-4 py-3">
-                            <button 
-                            onClick={handleOpenEditModal}
-                            >
-
-                            <BiSolidEdit className="text-2xl cursor-pointer mx-auto text-green-500" />
+                            <button onClick={handleOpenEditModal}>
+                              <BiSolidEdit className="text-2xl cursor-pointer mx-auto text-green-500" />
                             </button>
-                            </td>
+                          </td>
                           <td className="px-4 py-3">
-                            <button 
-                            onClick={handleDelete}
-                            >
- 
-                            <MdDelete className="text-2xl cursor-pointer mx-auto text-red-600" />
+                            <button onClick={handleDelete}>
+                              <MdDelete className="text-2xl cursor-pointer mx-auto text-red-600" />
                             </button>
-                            </td>
+                          </td>
                         </>
                       )}
-                     
                     </tr>
                   </tbody>
                 </table>
@@ -163,7 +169,7 @@ const [showEditModal, setShowEditModal] = useState(false)
                 <svg
                   fill="none"
                   stroke="currentColor"
-                  strokeLinecap="round" 
+                  strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
                   className="w-4 h-4 ml-2"
