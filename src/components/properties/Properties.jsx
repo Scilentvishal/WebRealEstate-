@@ -35,7 +35,7 @@ const Properties = () => {
             Check Them Out
           </span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-4 gap-1 my-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-4 px-4 gap-1 my-3">
           {loading ? (
             // Loader component (replace with your own loader)
             <div className="flex items-center justify-center h-64">

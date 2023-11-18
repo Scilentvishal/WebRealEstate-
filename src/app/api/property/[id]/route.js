@@ -39,7 +39,7 @@ export async function PUT(req, ctx) {
 
     const property = await Property.findById(id).populate("CurrentOwner");
 
-    if (property?.currentOwner?._id.toString() != decodedToken._id.toString()) {
+    if (property?.CurrentOwner?._id.toString() != decodedToken._id.toString()) {
       return new Response(
         JSON.stringify({ error: "unauthorized (wrong or expired token" }),
         { status: 403 }
@@ -76,11 +76,13 @@ export async function DELETE(req, ctx) {
   try {
     const property = await Property.findById(id).populate("CurrentOwner");
     if (
-      property?.currentOwner?._id.toString() !== decodedToken._id.toString()
+      property?.CurrentOwner?._id.toString() !== decodedToken._id.toString()
+      
     ) {
+      console.log(property?.CurrentOwner?._id.toString() !== decodedToken._id.toString())
       return new Response(
         JSON.stringify({ error: "Only owner can delete his property" }),
-        { status: 403 }
+        { status: 405 }
       );
     }
 
