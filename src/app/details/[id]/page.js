@@ -113,7 +113,7 @@ const page = (ctx) => {
                 </p>
               </div>
             </div> */}
-            <div className="md:w-2/3 md:pl-8 md:py-8 mt-4 pt-4 md:mt-0 text-center md:text-left">
+            <div className="md:w-2/3 md:pl-8 md:py-8 mt-4 pt-4 md:mt-0 text-left">
               <span className="tracking-widest text-sm title-font font-medium text-white">
                 {property?.propertyType}
               </span>

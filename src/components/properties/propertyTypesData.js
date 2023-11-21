@@ -1,6 +1,6 @@
 // typesOfProperties.js
 
-const typesOfProperties = [
+export const typesOfProperties = [
     {
       id: 1,
       name: 'House',
@@ -103,6 +103,17 @@ const typesOfProperties = [
     },
     // Add more types of properties as needed
   ];
-  
-  export default typesOfProperties;
+
+export const citiesInIndia = [
+    "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Pune", "Ahmedabad",
+    "Jaipur", "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam",
+    "Patna", "Vadodara", "Ghaziabad", "Ludhiana", "Agra", "Nashik", "Faridabad", "Meerut",
+    "Rajkot", "Kalyan-Dombivali", "Vasai-Virar", "Varanasi", "Srinagar", "Allahabad", "Amritsar",
+    "Jabalpur", "Solapur", "Dhanbad", "Gwalior", "Jammu", "Jhansi", "Raipur", "Kollam", "Trivandrum",
+    "Kozhikode", "Bhavnagar", "Dehradun", "Kakinda", "Warangal", "Guntur", "Durgapur", "Asansol",
+    "Ajmer", "Kolhapur", "Jamnagar", "Ujjain", "Loni", "Siliguri", "Jhunjhunu", "Nizamabad",
+    "Parbhani", "Nanded", "Ratlam", "Rourkela", "Korba", "Bhilwara", "Berhampur", "Muzaffarpur",
+    "Ahmednagar", "Mathura", "Kollam", "Avadi", "Rajahmundry", "Tirupur", "Bilaspur", "Shimoga",
+    // Add more cities as needed
+  ];
   
