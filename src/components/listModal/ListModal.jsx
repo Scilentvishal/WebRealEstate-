@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import typesOfProperties from "../properties/propertyTypesData";
+import {citiesInIndia, typesOfProperties} from "../properties/propertyTypesData";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
@@ -224,15 +224,23 @@ const ListModal = ({ handleHideListModal }) => {
             >
               City
             </label>
-            <input
-              type="text"
+            <select
               id="city"
               name="city"
               value={stateData.city}
               onChange={handleChange}
               className="mt-1 p-3 w-full border rounded-md focus:outline-none focus:border-blue-500"
               required
-            />
+            >
+              <option value="" disabled>
+                Select Property Type
+              </option>
+              {citiesInIndia.map((city, i) => (
+                <option key={i} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="mb-4">
             <label

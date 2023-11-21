@@ -35,14 +35,15 @@ const Properties = () => {
             Check Them Out
           </span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-4 px-4 gap-1 my-3">
+       
           {loading ? (
             // Loader component (replace with your own loader)
             <div className="flex items-center justify-center h-64">
               Loading...
             </div>
           ) : (
-             properties.map((property, i) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-4 px-4 gap-1 my-3">
+            { properties.map((property, i) => (
                 <Link href={`/details/${property._id}`} key={i}>
                   <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                     <div className="relative aspect-w-4 aspect-h-3 h-64 ">
@@ -64,9 +65,10 @@ const Properties = () => {
                     </div>
                   </div>
                 </Link>
-              ))
+              ))}
+              </div>
           )}
-        </div>
+      
       </div>
     </section>
   );

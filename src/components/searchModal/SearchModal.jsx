@@ -2,19 +2,20 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { City, MAX_PRICE, MIN_PRICE, types } from "./searchModalData";
+import { MAX_PRICE, MIN_PRICE } from "./searchModalData";
 import { toast } from "react-toastify";
+import {typesOfProperties, citiesInIndia } from "../properties/propertyTypesData";
 
 const SearchModal = ({ handleHideModal }) => {
   const responseType = {
     error: "error",
     success: "success",
   };
-  const [step, setStep] = useState(1);
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [type, setType] = useState(0);
-  const [city, setCity] = useState(0);
+  const [step, setStep] = useState(2);
+  const [minPrice, setMinPrice] = useState(null);
+  const [maxPrice, setMaxPrice] = useState(null);
+  const [type, setType] = useState(typesOfProperties[0].name);
+  const [city, setCity] = useState(citiesInIndia[0]);
   const router = useRouter();
 
   const nextStep = () => {
@@ -35,7 +36,7 @@ const SearchModal = ({ handleHideModal }) => {
     //   // ( maxPrice > minPrice)
     //   );
     // console.log(minPrice , maxPrice , city, type)
-    if (type && city && minPrice && maxPrice && (maxPrice > minPrice)) {
+    if (type && city ) {
       const url = `/search?type=${type}&minPrice=${minPrice}&maxPrice=${maxPrice}&city=${city}`;
 
       router.push(url);
@@ -73,7 +74,7 @@ const SearchModal = ({ handleHideModal }) => {
                     type="number"
                     id="minprice"
                     name="minprice"
-                    value={minPrice}
+                    defaultValue={minPrice}
                     min={MIN_PRICE}
                     onChange={(e) => setMinPrice(e.target.value)}
                     className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
@@ -90,7 +91,7 @@ const SearchModal = ({ handleHideModal }) => {
                     type="number"
                     id="maxprice"
                     name="maxprice"
-                    value={maxPrice}
+                    defaultValue={maxPrice}
                     max={MAX_PRICE}
                     onChange={(e) => setMaxPrice(e.target.value)}
                     className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
@@ -103,7 +104,7 @@ const SearchModal = ({ handleHideModal }) => {
                 <h3 className="text-lg font-semibold">Pick a type</h3>
                 <div>
                   <label
-                    htmlFor="countries"
+                    htmlFor="city"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
                     Select an option
@@ -111,12 +112,12 @@ const SearchModal = ({ handleHideModal }) => {
                   <select
                     onChange={(e) => setType((prev) => e.target.value)}
                     value={type}
-                    id="countries"
+                    id="city"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                   >
-                    {types.map((types, i) => (
-                      <option value={i} key={types}>
-                        {types}
+                    {typesOfProperties.map((types, i) => (
+                      <option value={types.name} key={types.id}>
+                        {types.name}
                       </option>
                     ))}
                   </select>
@@ -136,11 +137,11 @@ const SearchModal = ({ handleHideModal }) => {
                   </label>
                   <select
                     onChange={(e) => setCity((prev) => e.target.value)}
-                    value={city}
+                    defaultValue={city}
                     id="city"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                   >
-                    {City.map((city, i) => (
+                    {citiesInIndia.map((city, i) => (
                       <option value={city} key={i}>
                         {city}
                       </option>
@@ -151,7 +152,7 @@ const SearchModal = ({ handleHideModal }) => {
             )}
           </div>
           <div className="flex justify-between">
-            {step > 1 && (
+            {step > 2 && (
               <button
                 onClick={prevStep}
                 className="bg-blue-500 text-white px-4 py-2 rounded"
